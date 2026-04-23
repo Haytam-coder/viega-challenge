@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Signal {
+  id             String   @id @default(cuid())
+  type           String
+  title          String
+  description    String
+  source         String
+  rawContent     String   @db.Text
+  tags           String[]
+  relevanceScore Float?
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  analysis Analysis?
+  decision Decision?
+  feedback UserFeedback[]
+}
+
+model Analysis {
+  id               String   @id @default(cuid())
+  signalId         String   @unique
+  signal           Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  summary          String   @db.Text
+  keyInsights      String[]
+  relevance        Float
+  urgency          Float
+  marketImpact     Float
+  affectedProducts String[]
+  createdAt        DateTime @default(now())
+}
+
+model Decision {
+  id          String   @id @default(cuid())
+  signalId    String   @unique
+  signal      Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  verdict     String
+  confidence  Float
+  reasoning   String   @db.Text
+  productIdea String?  @db.Text
+  impactScore     Int
+  impactBreakdown String?  @db.Text
+  timeframe       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  personas PersonaArgument[]
+}
+
+model PersonaArgument {
+  id          String   @id @default(cuid())
+  decisionId  String
+  decision    Decision @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+  persona     String
+  personaName String
+  stance      String
+  argument    String   @db.Text
+  quote       String
+  createdAt   DateTime @default(now())
+}
+
+model UserFeedback {
+  id         String   @id @default(cuid())
+  signalId   String
+  signal     Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  action     String
+  importance Int?
+  comment    String?
+  createdAt  DateTime @default(now())
+}

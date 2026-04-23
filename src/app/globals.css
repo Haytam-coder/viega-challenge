@@ -1,26 +1,160 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --viega-yellow: #ffe600;
+  --viega-yellow-dim: rgba(255, 230, 0, 0.12);
+  --viega-yellow-border: rgba(255, 230, 0, 0.25);
+
+  /* Backgrounds */
+  --bg: #080808;
+  --sidebar-bg: #0d0d0d;
+  --surface: #111111;
+  --card: #161616;
+  --card-hover: #1c1c1c;
+  --card-active: #1e1e1e;
+
+  /* Borders */
+  --border: #222222;
+  --border-light: #1a1a1a;
+
+  /* Text */
+  --text: #f0f0f0;
+  --text-secondary: #888888;
+  --text-muted: #444444;
+
+  /* Signal types */
+  --competitor: #ef4444;
+  --competitor-bg: rgba(239, 68, 68, 0.08);
+  --competitor-border: rgba(239, 68, 68, 0.2);
+  --market: #3b82f6;
+  --market-bg: rgba(59, 130, 246, 0.08);
+  --market-border: rgba(59, 130, 246, 0.2);
+  --patent: #8b5cf6;
+  --patent-bg: rgba(139, 92, 246, 0.08);
+  --patent-border: rgba(139, 92, 246, 0.2);
+
+  /* Verdicts */
+  --build: #22c55e;
+  --build-bg: rgba(34, 197, 94, 0.08);
+  --build-border: rgba(34, 197, 94, 0.25);
+  --invest: #f59e0b;
+  --invest-bg: rgba(245, 158, 11, 0.08);
+  --invest-border: rgba(245, 158, 11, 0.25);
+  --ignore: #6b7280;
+  --ignore-bg: rgba(107, 114, 128, 0.08);
+  --ignore-border: rgba(107, 114, 128, 0.2);
+
+  /* Personas */
+  --innovator: #3b82f6;
+  --innovator-bg: rgba(59, 130, 246, 0.07);
+  --traditionalist: #8b5cf6;
+  --traditionalist-bg: rgba(139, 92, 246, 0.07);
+  --analyst: #f59e0b;
+  --analyst-bg: rgba(245, 158, 11, 0.07);
+
+  /* Sidebar */
+  --sidebar-width: 220px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body,
+#__next {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display",
+    "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGreen {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.25s ease forwards;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--card) 25%,
+    var(--card-hover) 50%,
+    var(--card) 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--viega-yellow);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
