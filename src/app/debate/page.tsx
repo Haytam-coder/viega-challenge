@@ -220,7 +220,7 @@ export default function DebatePage() {
             </p>
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto space-y-6">
+          <div className="space-y-6">
             {/* Signal context */}
             {selected && (
               <div

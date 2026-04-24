@@ -124,7 +124,7 @@ export default function OverviewPage() {
         </p>
       </div>
 
-      <div className="p-8 space-y-6 max-w-5xl">
+      <div className="p-8 space-y-6">
 
         {/* ── KPI row ────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-4 gap-3">

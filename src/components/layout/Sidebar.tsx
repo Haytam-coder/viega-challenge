@@ -66,14 +66,14 @@ export function Sidebar() {
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 px-3 space-y-0.5">
+      <nav className="flex-1 px-3 space-y-1">
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group"
+              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-150 group"
               style={{
                 backgroundColor: active
                   ? "var(--viega-yellow-dim)"
