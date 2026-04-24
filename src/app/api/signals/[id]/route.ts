@@ -24,9 +24,13 @@ export async function GET(
     decision: signal.decision
       ? {
           ...signal.decision,
-          impactBreakdown: signal.decision.impactBreakdown
-            ? JSON.parse(signal.decision.impactBreakdown)
-            : null,
+          impactBreakdown: (() => {
+              try {
+                return signal.decision!.impactBreakdown ? JSON.parse(signal.decision!.impactBreakdown) : null;
+              } catch {
+                return null;
+              }
+            })(),
         }
       : null,
   });

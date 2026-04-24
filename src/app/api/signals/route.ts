@@ -18,9 +18,13 @@ export async function GET() {
     decision: s.decision
       ? {
           ...s.decision,
-          impactBreakdown: s.decision.impactBreakdown
-            ? JSON.parse(s.decision.impactBreakdown)
-            : null,
+          impactBreakdown: (() => {
+            try {
+              return s.decision!.impactBreakdown ? JSON.parse(s.decision!.impactBreakdown) : null;
+            } catch {
+              return null;
+            }
+          })(),
         }
       : null,
   }));
