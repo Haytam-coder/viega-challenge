@@ -1,3 +1,4 @@
+export const maxDuration = 60;
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import type { PrismaClient } from "@/generated/prisma/client";
