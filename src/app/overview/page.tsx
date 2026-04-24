@@ -248,30 +248,51 @@ export default function OverviewPage() {
               Pipeline health · decision distribution · top signals
             </p>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "6px 14px",
-              borderRadius: "20px",
-              backgroundColor: "var(--accent-bg)",
-              border: "1px solid var(--accent)",
-              opacity: 0.8,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div
               style={{
-                width: "6px",
-                height: "6px",
-                borderRadius: "50%",
-                backgroundColor: "var(--accent)",
-                animation: "pulseGreen 2s ease-in-out infinite",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "6px 14px",
+                borderRadius: "20px",
+                backgroundColor: "var(--accent-bg)",
+                border: "1px solid var(--accent)",
+                opacity: 0.8,
               }}
-            />
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--accent)" }}>
-              Live data
-            </span>
+            >
+              <div
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "50%",
+                  backgroundColor: "var(--accent)",
+                  animation: "pulseGreen 2s ease-in-out infinite",
+                }}
+              />
+              <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--accent)" }}>
+                Live data
+              </span>
+            </div>
+            <Link
+              href="/overview/radar"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "6px 16px",
+                borderRadius: "20px",
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border)",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "var(--text-secondary)",
+                textDecoration: "none",
+                transition: "all 0.12s",
+              }}
+            >
+              Signal Radar →
+            </Link>
           </div>
         </div>
       </div>
@@ -416,7 +437,7 @@ export default function OverviewPage() {
             {loading ? (
               <div className="skeleton h-36 rounded-xl" />
             ) : (
-              <DonutChart data={verdictData} total={decided.length || 1} />
+              <DonutChart data={verdictData} total={buildCount + investCount + ignoreCount || 1} />
             )}
           </div>
         </div>

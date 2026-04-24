@@ -14,6 +14,7 @@ type Tx = Omit<
 const Schema = z.object({
   signalId: z.string(),
   userFeedbackContext: z.string().optional(),
+  forceVerdict: z.enum(["Build", "Invest", "Ignore"]).optional(),
 });
 
 export async function POST(req: Request) {
@@ -47,19 +48,31 @@ export async function POST(req: Request) {
     affectedProducts: signal.analysis.affectedProducts,
   };
 
-  const decisionResult = await generateDecision(
-    signal.title,
-    signal.type,
-    analysis,
-    parsed.data.userFeedbackContext
-  );
+  const decisionResult = parsed.data.forceVerdict
+    ? {
+        verdict: parsed.data.forceVerdict,
+        confidence: 1,
+        reasoning: "PM decision override via Action Queue.",
+        productIdea: null,
+        impactScore: analysis.marketImpact,
+        impactBreakdown: null,
+        timeframe: null,
+      }
+    : await generateDecision(
+        signal.title,
+        signal.type,
+        analysis,
+        parsed.data.userFeedbackContext
+      );
 
-  const personas = await generateAllPersonas(
-    signal.title,
-    decisionResult.verdict,
-    decisionResult.reasoning,
-    analysis
-  );
+  const personas = parsed.data.forceVerdict
+    ? []
+    : await generateAllPersonas(
+        signal.title,
+        decisionResult.verdict,
+        decisionResult.reasoning,
+        analysis
+      );
 
   const decision = await prisma.$transaction(async (tx: Tx) => {
     const existing = await tx.decision.findUnique({

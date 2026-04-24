@@ -19,21 +19,16 @@ export function DonutChart({ data, total }: DonutChartProps) {
   const circumference = 2 * Math.PI * r;
   const gap = 3;
 
-  let cumulativeDeg = -90;
+  let cumulativePct = 0;
 
   const segments = data
     .filter((d) => d.value > 0)
     .map((d) => {
       const pct = d.value / total;
-      const deg = pct * 360;
-      const startDeg = cumulativeDeg;
-      cumulativeDeg += deg;
-
-      const startRad = (startDeg * Math.PI) / 180;
-      const strokeDash = (pct * circumference) - gap;
-      const offset = circumference - (startDeg + 90) * (circumference / 360);
-
-      return { ...d, pct, strokeDash, offset, startRad };
+      const arcLength = Math.max(0, pct * circumference - gap);
+      const offset = circumference * (0.25 - cumulativePct);
+      cumulativePct += pct;
+      return { ...d, pct, strokeDash: arcLength, offset };
     });
 
   return (

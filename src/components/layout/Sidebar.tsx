@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessagesSquare, Globe, BarChart2 } from "lucide-react";
+import { LayoutDashboard, MessagesSquare, Globe, BarChart2, Inbox, Radar } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
-  { href: "/overview", label: "Overview",     icon: BarChart2 },
-  { href: "/",         label: "Dashboard",    icon: LayoutDashboard },
-  { href: "/debate",   label: "Agent Debate", icon: MessagesSquare },
-  { href: "/research", label: "Research",     icon: Globe },
+  { href: "/overview",       label: "Overview",      icon: BarChart2, indent: false },
+  { href: "/overview/radar", label: "Signal Radar",  icon: Radar,     indent: true  },
+  { href: "/",               label: "Dashboard",     icon: LayoutDashboard, indent: false },
+  { href: "/queue",          label: "Action Queue",  icon: Inbox,     indent: false },
+  { href: "/debate",         label: "Agent Debate",  icon: MessagesSquare, indent: false },
+  { href: "/research",       label: "Research",      icon: Globe,     indent: false },
 ];
 
 export function Sidebar() {
@@ -67,7 +69,7 @@ export function Sidebar() {
 
       {/* Nav items */}
       <nav style={{ flex: 1, padding: "0 10px", display: "flex", flexDirection: "column", gap: "2px" }}>
-        {NAV.map(({ href, label, icon: Icon }) => {
+        {NAV.map(({ href, label, icon: Icon, indent }) => {
           const active = pathname === href;
           return (
             <Link
@@ -78,6 +80,7 @@ export function Sidebar() {
                 alignItems: "center",
                 gap: "10px",
                 padding: "10px 12px",
+                paddingLeft: indent ? "28px" : "12px",
                 borderRadius: "8px",
                 textDecoration: "none",
                 transition: "all 0.12s",
@@ -85,16 +88,16 @@ export function Sidebar() {
               }}
             >
               <Icon
-                size={15}
+                size={indent ? 13 : 15}
                 style={{
-                  color: active ? "#ffffff" : "var(--text-muted)",
+                  color: active ? "#ffffff" : indent ? "var(--text-muted)" : "var(--text-muted)",
                   strokeWidth: active ? 2.5 : 1.8,
                   flexShrink: 0,
                 }}
               />
               <span
                 style={{
-                  fontSize: "13px",
+                  fontSize: indent ? "12px" : "13px",
                   fontWeight: active ? 700 : 500,
                   color: active ? "#ffffff" : "var(--text-secondary)",
                   letterSpacing: active ? "0.01em" : "0",

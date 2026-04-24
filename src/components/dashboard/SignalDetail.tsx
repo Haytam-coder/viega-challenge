@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import type { Signal, ImpactBreakdown } from "@/types";
-import { RotateCcw, ThumbsUp, ThumbsDown, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
+import { RotateCcw, ChevronDown, ChevronUp, MessageSquarePlus } from "lucide-react";
 
 interface SignalDetailProps {
   signal: Signal;
   isRunning: boolean;
   runningStep: string;
   onAnalyze: () => void;
-  onFeedback: (action: string, importance: number, reanalyze: boolean) => Promise<void>;
+  onFeedback: (action: string, importance: number, reanalyze: boolean, context?: string) => Promise<void>;
 }
 
 const VERDICT_STYLES = {
@@ -53,8 +53,10 @@ type Panel = "debate" | "analysis" | null;
 
 export function SignalDetail({ signal, isRunning, runningStep, onAnalyze, onFeedback }: SignalDetailProps) {
   const [open, setOpen] = useState<Panel>(null);
-  const [importance, setImportance] = useState(3);
-  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [challengeCtx, setChallengeCtx] = useState("");
+  const [challengeVerdict, setChallengeVerdict] = useState<string | null>(null);
+  const [challenging, setChallenging] = useState(false);
+  const [challengeResult, setChallengeResult] = useState<{ verdict: string; confidence: number } | null>(null);
 
   const decision = signal.decision;
   const analysis = signal.analysis;
@@ -62,9 +64,15 @@ export function SignalDetail({ signal, isRunning, runningStep, onAnalyze, onFeed
   const verdictStyle = decision ? VERDICT_STYLES[decision.verdict as keyof typeof VERDICT_STYLES] : null;
 
   const toggle = (panel: Panel) => setOpen((cur) => (cur === panel ? null : panel));
-  const handleFeedback = async (action: string, reanalyze: boolean) => {
-    setLastAction(action);
-    await onFeedback(action, importance, reanalyze);
+
+  const handleChallenge = async () => {
+    if (!challengeCtx.trim()) return;
+    setChallenging(true);
+    const ctx = challengeCtx.trim();
+    const suggestion = challengeVerdict ? ` PM suggests: ${challengeVerdict}.` : "";
+    await onFeedback("boost", 5, true, ctx + suggestion);
+    setChallengeResult(signal.decision ? { verdict: signal.decision.verdict, confidence: signal.decision.confidence } : null);
+    setChallenging(false);
   };
 
   return (
@@ -123,6 +131,126 @@ export function SignalDetail({ signal, isRunning, runningStep, onAnalyze, onFeed
             </div>
           )}
         </div>
+
+        {/* ── Challenge AI ────────────────────────────────────────────────── */}
+        {decision && !isRunning && (
+          <div
+            style={{
+              marginBottom: "28px",
+              padding: "20px 24px",
+              borderRadius: "12px",
+              backgroundColor: "var(--card)",
+              border: challengeCtx.trim() ? "1.5px solid var(--accent)" : "1px solid var(--border)",
+              transition: "border-color 0.15s",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+              <MessageSquarePlus size={15} style={{ color: "var(--accent)", flexShrink: 0 }} />
+              <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-sans)" }}>
+                Challenge the AI
+              </span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", marginLeft: "2px" }}>
+                — add context to trigger a re-analysis
+              </span>
+            </div>
+
+            <textarea
+              value={challengeCtx}
+              onChange={(e) => setChallengeCtx(e.target.value)}
+              disabled={challenging}
+              placeholder={`What does the AI miss? e.g. "Competitor already lost market share in DACH — this signal is less urgent than rated"`}
+              rows={3}
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                borderRadius: "8px",
+                border: "1px solid var(--border)",
+                backgroundColor: "var(--surface)",
+                fontSize: "13px",
+                color: "var(--text)",
+                fontFamily: "var(--font-sans)",
+                resize: "none",
+                outline: "none",
+                lineHeight: 1.6,
+                boxSizing: "border-box",
+              }}
+            />
+
+            {challengeCtx.trim() && (
+              <>
+                <div style={{ display: "flex", gap: "8px", marginTop: "10px", alignItems: "center" }}>
+                  <span style={{ fontSize: "12px", color: "var(--text-muted)", flexShrink: 0 }}>I lean toward:</span>
+                  {[
+                    { v: "Build",  color: "#00B69B" },
+                    { v: "Invest", color: "#f59e0b" },
+                    { v: "Ignore", color: "#6b7280" },
+                  ].map(({ v, color }) => (
+                    <button
+                      key={v}
+                      onClick={() => setChallengeVerdict((cur) => cur === v ? null : v)}
+                      style={{
+                        padding: "5px 14px",
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        color: challengeVerdict === v ? "#fff" : color,
+                        backgroundColor: challengeVerdict === v ? color : "transparent",
+                        border: `1.5px solid ${color}`,
+                        cursor: "pointer",
+                        fontFamily: "var(--font-sans)",
+                        transition: "all 0.12s",
+                      }}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                  <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "2px" }}>(optional)</span>
+                </div>
+
+                <button
+                  onClick={handleChallenge}
+                  disabled={challenging}
+                  style={{
+                    marginTop: "12px",
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    backgroundColor: challenging ? "var(--border)" : "var(--accent)",
+                    color: challenging ? "var(--text-muted)" : "#fff",
+                    border: "none",
+                    cursor: challenging ? "not-allowed" : "pointer",
+                    fontFamily: "var(--font-sans)",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  {challenging ? (
+                    <><div className="spinner" style={{ width: 13, height: 13, borderWidth: 2, borderTopColor: "#fff" }} /> Re-analyzing…</>
+                  ) : (
+                    <><RotateCcw size={13} /> Re-analyze with my context</>
+                  )}
+                </button>
+              </>
+            )}
+
+            {challengeResult && !challenging && (
+              <div style={{ marginTop: "12px", padding: "10px 14px", borderRadius: "8px", backgroundColor: "rgba(0,182,155,0.08)", border: "1px solid rgba(0,182,155,0.25)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>AI updated verdict:</span>
+                <span style={{ fontSize: "13px", fontWeight: 700, color: challengeResult.verdict === "Build" ? "#00B69B" : challengeResult.verdict === "Invest" ? "#f59e0b" : "#6b7280" }}>
+                  {challengeResult.verdict}
+                </span>
+                <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                  {Math.round(challengeResult.confidence * 100)}% confidence
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ── KPI metrics ────────────────────────────────────────────────── */}
         {(decision || analysis) && (
@@ -313,39 +441,6 @@ export function SignalDetail({ signal, isRunning, runningStep, onAnalyze, onFeed
               </div>
             )}
 
-            {/* Human-in-the-loop */}
-            <div style={{ padding: "24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
-              <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "16px", fontFamily: "var(--font-mono)" }}>
-                Your Verdict
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "16px" }}>
-                {[
-                  { action: "approve", icon: ThumbsUp,   color: "var(--build)",      label: "Approve" },
-                  { action: "reject",  icon: ThumbsDown, color: "var(--competitor)", label: "Reject" },
-                  { action: "boost",   icon: TrendingUp, color: "var(--invest)",     label: "Boost" },
-                ].map(({ action, icon: Icon, color, label }) => (
-                  <button key={action} onClick={() => handleFeedback(action, false)} disabled={isRunning}
-                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", borderRadius: "8px", fontSize: "13px", fontWeight: 600, cursor: isRunning ? "not-allowed" : "pointer", transition: "all 0.15s", backgroundColor: lastAction === action ? color : `${color}12`, color: lastAction === action ? "#000" : color, border: `1px solid ${color}40`, opacity: isRunning ? 0.5 : 1, fontFamily: "var(--font-sans)" }}>
-                    <Icon size={14} />{label}
-                  </button>
-                ))}
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Importance</span>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  {[1, 2, 3, 4, 5].map((d) => (
-                    <button key={d} onClick={() => setImportance(d)}
-                      style={{ width: "14px", height: "14px", borderRadius: "50%", cursor: "pointer", border: "none", transition: "all 0.15s", backgroundColor: d <= importance ? "var(--viega-yellow)" : "var(--border)", transform: d <= importance ? "scale(1.15)" : "scale(1)" }} />
-                  ))}
-                </div>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--viega-yellow)", fontFamily: "var(--font-mono)" }}>{importance}/5</span>
-              </div>
-              <button onClick={() => handleFeedback("boost", true)} disabled={isRunning}
-                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "13px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: isRunning ? "not-allowed" : "pointer", backgroundColor: isRunning ? "var(--border)" : "var(--viega-yellow)", color: isRunning ? "var(--text-muted)" : "#000", border: "none", fontFamily: "var(--font-sans)", transition: "all 0.15s" }}>
-                <RotateCcw size={14} />
-                {isRunning ? runningStep : "Re-analyze with My Input"}
-              </button>
-            </div>
           </div>
         )}
       </div>

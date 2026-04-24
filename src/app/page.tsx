@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import type { Signal } from "@/types";
 import { SignalDetail } from "@/components/dashboard/SignalDetail";
-import { Plus, RefreshCw, X, Filter, ChevronDown } from "lucide-react";
+import { Plus, RefreshCw, X, Filter, ChevronDown, Radar } from "lucide-react";
 
 type SortKey = "newest" | "impact" | "relevance";
 type TypeFilter = "all" | "competitor" | "market" | "patent";
@@ -103,7 +105,8 @@ function FilterSelect({
   );
 }
 
-export default function DashboardPage() {
+function DashboardInner() {
+  const searchParams = useSearchParams();
   const [signals, setSignals] = useState<Signal[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Signal | null>(null);
@@ -148,9 +151,11 @@ export default function DashboardPage() {
         data = await fetchSignals();
       }
       setLoading(false);
-      if (data.length > 0) setSelectedId(data[0].id);
+      const paramId = searchParams.get("id");
+      if (paramId) setSelectedId(paramId);
+      else if (data.length > 0) setSelectedId(data[0].id);
     })();
-  }, [fetchSignals]);
+  }, [fetchSignals, searchParams]);
 
   useEffect(() => {
     if (selectedId) fetchSelected(selectedId);
@@ -185,18 +190,15 @@ export default function DashboardPage() {
   );
 
   const handleFeedback = useCallback(
-    async (action: string, importance: number, reanalyze: boolean) => {
+    async (action: string, importance: number, reanalyze: boolean, context?: string) => {
       if (!selectedId) return;
       await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ signalId: selectedId, action, importance }),
+        body: JSON.stringify({ signalId: selectedId, action, importance, comment: context }),
       });
       if (reanalyze) {
-        await runPipeline(
-          selectedId,
-          `User marked as "${action}" with importance ${importance}/5. Adjust confidence accordingly.`
-        );
+        await runPipeline(selectedId, context ?? `User marked as "${action}" with importance ${importance}/5.`);
       }
     },
     [selectedId, runPipeline]
@@ -445,7 +447,7 @@ export default function DashboardPage() {
                     onClick={() => setSelectedId(signal.id)}
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "1fr 90px 70px",
+                      gridTemplateColumns: "1fr 90px 70px 28px",
                       gap: "0",
                       width: "100%",
                       padding: "12px 16px",
@@ -525,6 +527,37 @@ export default function DashboardPage() {
                     >
                       {sMeta.label}
                     </span>
+
+                    {/* Radar link */}
+                    <Link
+                      href={`/overview/radar?id=${signal.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      title="Open in Signal Radar"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "24px",
+                        height: "24px",
+                        borderRadius: "6px",
+                        color: "var(--text-muted)",
+                        border: "1px solid transparent",
+                        transition: "all 0.12s",
+                        marginLeft: "4px",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = "var(--accent)";
+                        e.currentTarget.style.borderColor = "var(--accent)";
+                        e.currentTarget.style.backgroundColor = "var(--accent-bg)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = "var(--text-muted)";
+                        e.currentTarget.style.borderColor = "transparent";
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }}
+                    >
+                      <Radar size={12} />
+                    </Link>
                   </button>
                 );
               })
@@ -708,5 +741,13 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense>
+      <DashboardInner />
+    </Suspense>
   );
 }
