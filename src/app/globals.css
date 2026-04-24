@@ -2,60 +2,68 @@
 @source "../../";
 
 :root {
+  /* Fonts */
+  --font-sans: var(--font-syne), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono), "Space Mono", "Courier New", monospace;
+
   /* Brand */
   --viega-yellow: #ffe600;
-  --viega-yellow-dim: rgba(255, 230, 0, 0.12);
-  --viega-yellow-border: rgba(255, 230, 0, 0.25);
+  --viega-yellow-dim: rgba(255, 230, 0, 0.08);
+  --viega-yellow-border: rgba(255, 230, 0, 0.2);
+  --viega-yellow-glow: 0 0 24px rgba(255, 230, 0, 0.12);
 
   /* Backgrounds */
-  --bg: #080808;
-  --sidebar-bg: #0d0d0d;
-  --surface: #111111;
-  --card: #161616;
-  --card-hover: #1c1c1c;
-  --card-active: #1e1e1e;
+  --bg: #070707;
+  --sidebar-bg: #0a0a0a;
+  --surface: #101010;
+  --card: #141414;
+  --card-hover: #1a1a1a;
+  --card-active: #181810;
 
   /* Borders */
-  --border: #222222;
-  --border-light: #1a1a1a;
+  --border: #2a2a2a;
+  --border-light: #1c1c1c;
 
   /* Text */
-  --text: #f0f0f0;
-  --text-secondary: #b0b0b0;
-  --text-muted: #707070;
+  --text: #efefef;
+  --text-secondary: #b8b8b8;
+  --text-muted: #6a6a6a;
 
   /* Signal types */
   --competitor: #ef4444;
-  --competitor-bg: rgba(239, 68, 68, 0.08);
-  --competitor-border: rgba(239, 68, 68, 0.2);
+  --competitor-bg: rgba(239, 68, 68, 0.07);
+  --competitor-border: rgba(239, 68, 68, 0.18);
   --market: #3b82f6;
-  --market-bg: rgba(59, 130, 246, 0.08);
-  --market-border: rgba(59, 130, 246, 0.2);
+  --market-bg: rgba(59, 130, 246, 0.07);
+  --market-border: rgba(59, 130, 246, 0.18);
   --patent: #8b5cf6;
-  --patent-bg: rgba(139, 92, 246, 0.08);
-  --patent-border: rgba(139, 92, 246, 0.2);
+  --patent-bg: rgba(139, 92, 246, 0.07);
+  --patent-border: rgba(139, 92, 246, 0.18);
 
   /* Verdicts */
   --build: #22c55e;
-  --build-bg: rgba(34, 197, 94, 0.08);
-  --build-border: rgba(34, 197, 94, 0.25);
+  --build-bg: rgba(34, 197, 94, 0.07);
+  --build-border: rgba(34, 197, 94, 0.22);
   --invest: #f59e0b;
-  --invest-bg: rgba(245, 158, 11, 0.08);
-  --invest-border: rgba(245, 158, 11, 0.25);
+  --invest-bg: rgba(245, 158, 11, 0.07);
+  --invest-border: rgba(245, 158, 11, 0.22);
   --ignore: #6b7280;
-  --ignore-bg: rgba(107, 114, 128, 0.08);
-  --ignore-border: rgba(107, 114, 128, 0.2);
+  --ignore-bg: rgba(107, 114, 128, 0.07);
+  --ignore-border: rgba(107, 114, 128, 0.18);
 
   /* Personas */
   --innovator: #3b82f6;
-  --innovator-bg: rgba(59, 130, 246, 0.07);
+  --innovator-bg: rgba(59, 130, 246, 0.06);
+  --innovator-border: rgba(59, 130, 246, 0.15);
   --traditionalist: #8b5cf6;
-  --traditionalist-bg: rgba(139, 92, 246, 0.07);
+  --traditionalist-bg: rgba(139, 92, 246, 0.06);
+  --traditionalist-border: rgba(139, 92, 246, 0.15);
   --analyst: #f59e0b;
-  --analyst-bg: rgba(245, 158, 11, 0.07);
+  --analyst-bg: rgba(245, 158, 11, 0.06);
+  --analyst-border: rgba(245, 158, 11, 0.15);
 
   /* Sidebar */
-  --sidebar-width: 220px;
+  --sidebar-width: 240px;
 }
 
 * {
@@ -72,13 +80,18 @@ body,
 
 body {
   background-color: var(--bg);
+  background-image: radial-gradient(circle, #1f1f1f 1px, transparent 1px);
+  background-size: 28px 28px;
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display",
-    "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   font-size: 13px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono {
+  font-family: var(--font-mono) !important;
 }
 
 ::-webkit-scrollbar {
@@ -93,14 +106,14 @@ body {
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #333;
+  background: #3a3a3a;
 }
 
 /* Animations */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -108,35 +121,40 @@ body {
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulseYellow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 230, 0, 0.4); }
+  50%       { opacity: 0.7; box-shadow: 0 0 0 4px rgba(255, 230, 0, 0); }
+}
+
 @keyframes pulseGreen {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.8);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -400px 0;
-  }
-  100% {
-    background-position: 400px 0;
-  }
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes barFill {
+  from { width: 0%; }
 }
 
 .fade-up {
-  animation: fadeUp 0.25s ease forwards;
+  animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease forwards;
 }
 
 .skeleton {
@@ -148,14 +166,18 @@ body {
   );
   background-size: 400px 100%;
   animation: shimmer 1.4s ease infinite;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--border);
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
   border-top-color: var(--viega-yellow);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.65s linear infinite;
+}
+
+.bar-fill {
+  animation: barFill 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

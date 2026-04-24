@@ -24,25 +24,28 @@ export function Sidebar() {
       }}
     >
       {/* Logo */}
-      <div className="px-5 pt-6 pb-5">
-        <div className="flex items-center gap-2.5">
+      <div className="px-5 pt-7 pb-6">
+        <div className="flex items-center gap-3">
           <div
-            className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
+            className="w-8 h-8 rounded flex items-center justify-center shrink-0"
             style={{ backgroundColor: "var(--viega-yellow)" }}
           >
-            <span className="text-black font-black text-sm leading-none">V</span>
+            <span style={{ color: "#000", fontWeight: 900, fontSize: "15px", letterSpacing: "-0.04em", fontFamily: "var(--font-sans)" }}>V</span>
           </div>
           <div>
             <div
-              className="text-xs font-bold tracking-[0.12em] uppercase"
-              style={{ color: "var(--text)" }}
+              style={{
+                color: "var(--text)",
+                fontWeight: 700,
+                fontSize: "13px",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                fontFamily: "var(--font-sans)",
+              }}
             >
               Viega
             </div>
-            <div
-              className="text-xs tracking-wide"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <div style={{ color: "var(--text-muted)", fontSize: "10px", letterSpacing: "0.06em" }}>
               Compass
             </div>
           </div>
@@ -50,86 +53,76 @@ export function Sidebar() {
       </div>
 
       {/* Divider */}
-      <div
-        className="mx-4 mb-5"
-        style={{ height: "1px", backgroundColor: "var(--border-light)" }}
-      />
+      <div className="mx-5 mb-4" style={{ height: "1px", backgroundColor: "var(--border-light)" }} />
 
       {/* Section label */}
       <div className="px-5 mb-2">
         <span
-          className="text-[10px] font-semibold tracking-[0.15em] uppercase"
-          style={{ color: "var(--text-muted)" }}
+          style={{
+            fontSize: "9px",
+            fontWeight: 700,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "var(--text-muted)",
+            fontFamily: "var(--font-mono)",
+          }}
         >
           Navigation
         </span>
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-3 space-y-0.5">
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-150 group"
+              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-150"
               style={{
-                backgroundColor: active
-                  ? "var(--viega-yellow-dim)"
-                  : "transparent",
-                color: active ? "var(--viega-yellow)" : "var(--text-secondary)",
+                backgroundColor: active ? "var(--viega-yellow-dim)" : "transparent",
+                borderLeft: active ? "2px solid var(--viega-yellow)" : "2px solid transparent",
+                boxShadow: active ? "var(--viega-yellow-glow)" : "none",
               }}
             >
               <Icon
-                size={15}
+                size={14}
                 style={{
                   color: active ? "var(--viega-yellow)" : "var(--text-muted)",
+                  strokeWidth: active ? 2.5 : 1.8,
                 }}
-                strokeWidth={active ? 2.2 : 1.8}
               />
               <span
-                className="text-sm font-medium"
                 style={{
+                  fontSize: "13px",
+                  fontWeight: active ? 600 : 400,
                   color: active ? "var(--viega-yellow)" : "var(--text-secondary)",
+                  letterSpacing: active ? "0.01em" : "0",
+                  fontFamily: "var(--font-sans)",
                 }}
               >
                 {label}
               </span>
-              {active && (
-                <div
-                  className="ml-auto w-1 h-1 rounded-full"
-                  style={{ backgroundColor: "var(--viega-yellow)" }}
-                />
-              )}
             </Link>
           );
         })}
       </nav>
 
       {/* Footer */}
-      <div
-        className="p-4 mx-3 mb-4 rounded-lg"
-        style={{
-          backgroundColor: "var(--card)",
-          border: "1px solid var(--border-light)",
-        }}
-      >
-        <div className="flex items-center gap-2 mb-1">
+      <div className="p-4 mx-3 mb-4 rounded-lg" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border-light)" }}>
+        <div className="flex items-center gap-2 mb-2">
           <div
-            className="w-1.5 h-1.5 rounded-full"
-            style={{
-              backgroundColor: "var(--build)",
-              animation: "pulseGreen 2s ease-in-out infinite",
-            }}
+            className="w-1.5 h-1.5 rounded-full shrink-0"
+            style={{ backgroundColor: "var(--build)", animation: "pulseGreen 2s ease-in-out infinite" }}
           />
-          <span className="text-[11px] font-medium" style={{ color: "var(--build)" }}>
+          <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--build)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Live
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Zap size={10} style={{ color: "var(--text-muted)" }} />
-          <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+          <Zap size={9} style={{ color: "var(--text-muted)" }} />
+          <span style={{ fontSize: "10px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
             gemini-2.5-flash
           </span>
         </div>

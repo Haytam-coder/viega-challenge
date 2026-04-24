@@ -62,12 +62,12 @@ function ImpactBreakdownPanel({ breakdown, total }: { breakdown: ImpactBreakdown
       className="p-4 rounded-xl space-y-3"
       style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
     >
-      <div className="flex items-center justify-between">
-        <p className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "var(--text-muted)" }}>
+      <div className="flex items-center justify-between mb-1">
+        <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
           Impact Score Breakdown
         </p>
-        <span className="text-lg font-black" style={{ color: "var(--text)" }}>
-          {total}<span className="text-xs font-normal" style={{ color: "var(--text-muted)" }}>/10</span>
+        <span style={{ fontSize: "20px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+          {total}<span style={{ fontSize: "10px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
         </span>
       </div>
       <div className="space-y-3">
@@ -76,25 +76,22 @@ function ImpactBreakdownPanel({ breakdown, total }: { breakdown: ImpactBreakdown
           const pct = (dim.score / 5) * 100;
           return (
             <div key={key}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>{label}</span>
-                  <span
-                    className="text-[9px] font-bold px-1 py-0.5 rounded"
-                    style={{ backgroundColor: `${color}18`, color }}
-                  >
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--text-secondary)", fontFamily: "var(--font-sans)" }}>{label}</span>
+                  <span style={{ fontSize: "9px", fontWeight: 700, padding: "1px 5px", borderRadius: "3px", backgroundColor: `${color}14`, color, fontFamily: "var(--font-mono)" }}>
                     {weight}
                   </span>
                 </div>
-                <span className="text-xs font-bold" style={{ color }}>{dim.score}/5</span>
+                <span style={{ fontSize: "12px", fontWeight: 700, color, fontFamily: "var(--font-mono)" }}>{dim.score}/5</span>
               </div>
-              <div className="h-1.5 rounded-full mb-1.5" style={{ backgroundColor: "var(--border)" }}>
+              <div style={{ height: "3px", borderRadius: "2px", backgroundColor: "var(--border)", marginBottom: "6px", overflow: "hidden" }}>
                 <div
-                  className="h-1.5 rounded-full transition-all duration-700"
-                  style={{ width: `${pct}%`, backgroundColor: color }}
+                  className="bar-fill"
+                  style={{ height: "100%", borderRadius: "2px", width: `${pct}%`, backgroundColor: color, boxShadow: `0 0 8px ${color}60` }}
                 />
               </div>
-              <p className="text-[11px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
+              <p style={{ fontSize: "11px", lineHeight: 1.5, color: "var(--text-muted)", fontFamily: "var(--font-sans)" }}>
                 {dim.rationale}
               </p>
             </div>
@@ -208,27 +205,25 @@ export function SignalDetail({
             <div className="grid grid-cols-3 gap-3 pt-1">
               {decision && (
                 <div>
-                  <div className="text-[10px] mb-1" style={{ color: "var(--text-muted)" }}>Impact</div>
-                  <div className="text-base font-bold" style={{ color: "var(--text)" }}>
-                    {decision.impactScore}<span className="text-[10px] font-normal" style={{ color: "var(--text-muted)" }}>/10</span>
+                  <div style={{ fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px", fontFamily: "var(--font-mono)" }}>Impact</div>
+                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                    {decision.impactScore}<span style={{ fontSize: "11px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
                   </div>
                 </div>
               )}
               {analysis && (
                 <div>
-                  <div className="text-[10px] mb-1" style={{ color: "var(--text-muted)" }}>Relevance</div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-base font-bold" style={{ color: "var(--market)" }}>
-                      {Math.round(analysis.relevance * 100)}%
-                    </span>
+                  <div style={{ fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px", fontFamily: "var(--font-mono)" }}>Relevance</div>
+                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--market)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                    {Math.round(analysis.relevance * 100)}<span style={{ fontSize: "11px", fontWeight: 400, color: "var(--text-muted)" }}>%</span>
                   </div>
                 </div>
               )}
               {analysis && (
                 <div>
-                  <div className="text-[10px] mb-1" style={{ color: "var(--text-muted)" }}>Urgency</div>
-                  <div className="text-base font-bold" style={{ color: "var(--competitor)" }}>
-                    {Math.round(analysis.urgency * 100)}%
+                  <div style={{ fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px", fontFamily: "var(--font-mono)" }}>Urgency</div>
+                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--competitor)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                    {Math.round(analysis.urgency * 100)}<span style={{ fontSize: "11px", fontWeight: 400, color: "var(--text-muted)" }}>%</span>
                   </div>
                 </div>
               )}
@@ -279,30 +274,30 @@ export function SignalDetail({
         {/* ── Toggle buttons ──────────────────────────────────────────── */}
         {decision && (
           <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => toggle("debate")}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all"
-              style={{
-                backgroundColor: open === "debate" ? "var(--viega-yellow)" : "var(--card)",
-                color: open === "debate" ? "#000" : "var(--text-secondary)",
-                border: `1px solid ${open === "debate" ? "var(--viega-yellow)" : "var(--border)"}`,
-              }}
-            >
-              <span>🗣 Persona-Debatte</span>
-              {open === "debate" ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-            </button>
-            <button
-              onClick={() => toggle("analysis")}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all"
-              style={{
-                backgroundColor: open === "analysis" ? "var(--viega-yellow)" : "var(--card)",
-                color: open === "analysis" ? "#000" : "var(--text-secondary)",
-                border: `1px solid ${open === "analysis" ? "var(--viega-yellow)" : "var(--border)"}`,
-              }}
-            >
-              <span>📋 Vollanalyse</span>
-              {open === "analysis" ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-            </button>
+            {([
+              { panel: "debate" as Panel,   label: "Persona-Debatte", icon: "🗣" },
+              { panel: "analysis" as Panel, label: "Vollanalyse",     icon: "📋" },
+            ] as const).map(({ panel, label, icon }) => (
+              <button
+                key={panel}
+                onClick={() => toggle(panel)}
+                className="flex items-center justify-between transition-all duration-150"
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: "8px",
+                  backgroundColor: open === panel ? "var(--viega-yellow)" : "var(--card)",
+                  color: open === panel ? "#000" : "var(--text-secondary)",
+                  border: `1px solid ${open === panel ? "var(--viega-yellow)" : "var(--border)"}`,
+                  boxShadow: open === panel ? "var(--viega-yellow-glow)" : "none",
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+              >
+                <span>{icon} {label}</span>
+                {open === panel ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+              </button>
+            ))}
           </div>
         )}
 
