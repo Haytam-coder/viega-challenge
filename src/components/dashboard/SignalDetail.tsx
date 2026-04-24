@@ -13,32 +13,32 @@ interface SignalDetailProps {
 }
 
 const VERDICT_STYLES = {
-  Build:  { color: "var(--build)",       bg: "var(--build-bg)",       border: "var(--build-border)" },
-  Invest: { color: "var(--invest)",      bg: "var(--invest-bg)",      border: "var(--invest-border)" },
-  Ignore: { color: "var(--ignore)",      bg: "var(--ignore-bg)",      border: "var(--ignore-border)" },
+  Build:  { color: "var(--build)",  bg: "var(--build-bg)",  border: "var(--build-border)" },
+  Invest: { color: "var(--invest)", bg: "var(--invest-bg)", border: "var(--invest-border)" },
+  Ignore: { color: "var(--ignore)", bg: "var(--ignore-bg)", border: "var(--ignore-border)" },
 };
 
 const PERSONA_STYLES = {
-  innovator:      { color: "var(--innovator)",      bg: "var(--innovator-bg)",      emoji: "🚀" },
-  traditionalist: { color: "var(--traditionalist)", bg: "var(--traditionalist-bg)", emoji: "🏛" },
-  analyst:        { color: "var(--analyst)",         bg: "var(--analyst-bg)",        emoji: "📊" },
+  innovator:      { color: "var(--innovator)",      bg: "var(--innovator-bg)",      border: "var(--innovator-border)",      emoji: "🚀", name: "David",  role: "Digital Innovator" },
+  traditionalist: { color: "var(--traditionalist)", bg: "var(--traditionalist-bg)", border: "var(--traditionalist-border)", emoji: "🏛", name: "Josef",  role: "Loyal Traditionalist" },
+  analyst:        { color: "var(--analyst)",         bg: "var(--analyst-bg)",        border: "var(--analyst-border)",        emoji: "📊", name: "Steffen", role: "Demanding Doer" },
 };
 
 const STANCE_LABELS: Record<string, string> = {
-  strongly_agree:    "Strongly Agree",
-  agree:             "Agree",
-  neutral:           "Neutral",
-  disagree:          "Disagree",
-  strongly_disagree: "Strongly Oppose",
+  strongly_agree: "Strongly Agree", agree: "Agree", neutral: "Neutral",
+  disagree: "Disagree", strongly_disagree: "Strongly Oppose",
+};
+const STANCE_COLORS: Record<string, string> = {
+  strongly_agree: "var(--build)", agree: "var(--build)", neutral: "var(--text-muted)",
+  disagree: "var(--invest)", strongly_disagree: "var(--competitor)",
 };
 
-const STANCE_COLORS: Record<string, string> = {
-  strongly_agree:    "var(--build)",
-  agree:             "var(--build)",
-  neutral:           "var(--text-muted)",
-  disagree:          "var(--invest)",
-  strongly_disagree: "var(--competitor)",
-};
+const BREAKDOWN_DIMS = [
+  { key: "revenueImpact",     label: "Revenue Impact",     weight: "35%", color: "var(--competitor)" },
+  { key: "marketReach",       label: "Market Reach",       weight: "25%", color: "var(--market)" },
+  { key: "competitiveThreat", label: "Competitive Threat", weight: "25%", color: "var(--invest)" },
+  { key: "timeSensitivity",   label: "Time Sensitivity",   weight: "15%", color: "var(--patent)" },
+] as const;
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -49,79 +49,9 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-const BREAKDOWN_DIMS = [
-  { key: "revenueImpact",     label: "Revenue Impact",     weight: "35%", color: "var(--competitor)" },
-  { key: "marketReach",       label: "Market Reach",       weight: "25%", color: "var(--market)" },
-  { key: "competitiveThreat", label: "Competitive Threat", weight: "25%", color: "var(--invest)" },
-  { key: "timeSensitivity",   label: "Time Sensitivity",   weight: "15%", color: "var(--patent)" },
-] as const;
-
-function ImpactBreakdownPanel({ breakdown, total }: { breakdown: ImpactBreakdown; total: number }) {
-  return (
-    <div
-      className="p-4 rounded-xl space-y-3"
-      style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
-    >
-      <div className="flex items-center justify-between mb-1">
-        <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
-          Impact Score Breakdown
-        </p>
-        <span style={{ fontSize: "20px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
-          {total}<span style={{ fontSize: "10px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
-        </span>
-      </div>
-      <div className="space-y-3">
-        {BREAKDOWN_DIMS.map(({ key, label, weight, color }) => {
-          const dim = breakdown[key];
-          const pct = (dim.score / 5) * 100;
-          return (
-            <div key={key}>
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--text-secondary)", fontFamily: "var(--font-sans)" }}>{label}</span>
-                  <span style={{ fontSize: "9px", fontWeight: 700, padding: "1px 5px", borderRadius: "3px", backgroundColor: `${color}14`, color, fontFamily: "var(--font-mono)" }}>
-                    {weight}
-                  </span>
-                </div>
-                <span style={{ fontSize: "12px", fontWeight: 700, color, fontFamily: "var(--font-mono)" }}>{dim.score}/5</span>
-              </div>
-              <div style={{ height: "3px", borderRadius: "2px", backgroundColor: "var(--border)", marginBottom: "6px", overflow: "hidden" }}>
-                <div
-                  className="bar-fill"
-                  style={{ height: "100%", borderRadius: "2px", width: `${pct}%`, backgroundColor: color, boxShadow: `0 0 8px ${color}60` }}
-                />
-              </div>
-              <p style={{ fontSize: "11px", lineHeight: 1.5, color: "var(--text-muted)", fontFamily: "var(--font-sans)" }}>
-                {dim.rationale}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function MiniBar({ value, color }: { value: number; color: string }) {
-  return (
-    <div className="h-1 rounded-full flex-1" style={{ backgroundColor: "var(--border)" }}>
-      <div
-        className="h-1 rounded-full"
-        style={{ width: `${Math.round(value * 100)}%`, backgroundColor: color }}
-      />
-    </div>
-  );
-}
-
 type Panel = "debate" | "analysis" | null;
 
-export function SignalDetail({
-  signal,
-  isRunning,
-  runningStep,
-  onAnalyze,
-  onFeedback,
-}: SignalDetailProps) {
+export function SignalDetail({ signal, isRunning, runningStep, onAnalyze, onFeedback }: SignalDetailProps) {
   const [open, setOpen] = useState<Panel>(null);
   const [importance, setImportance] = useState(3);
   const [lastAction, setLastAction] = useState<string | null>(null);
@@ -129,12 +59,9 @@ export function SignalDetail({
   const decision = signal.decision;
   const analysis = signal.analysis;
   const personas = decision?.personas ?? [];
-  const verdictStyle = decision
-    ? VERDICT_STYLES[decision.verdict as keyof typeof VERDICT_STYLES]
-    : null;
+  const verdictStyle = decision ? VERDICT_STYLES[decision.verdict as keyof typeof VERDICT_STYLES] : null;
 
   const toggle = (panel: Panel) => setOpen((cur) => (cur === panel ? null : panel));
-
   const handleFeedback = async (action: string, reanalyze: boolean) => {
     setLastAction(action);
     await onFeedback(action, importance, reanalyze);
@@ -142,138 +69,115 @@ export function SignalDetail({
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="p-5 space-y-3 max-w-2xl">
+      <div style={{ padding: "32px 40px", maxWidth: "100%" }}>
 
-        {/* ── Snapshot card ──────────────────────────────────────────── */}
-        <div
-          className="rounded-xl p-4 space-y-3"
-          style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
-        >
-          {/* Source + date */}
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "var(--text-muted)" }}>
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <div style={{ marginBottom: "28px" }}>
+          {/* Source + meta */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+            <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
               {signal.source}
             </span>
-            <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+            <span style={{ color: "var(--border)", fontSize: "10px" }}>·</span>
+            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
               {timeAgo(signal.createdAt)}
+            </span>
+            <span style={{ marginLeft: "auto", fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", padding: "3px 8px", borderRadius: "4px", color: signal.type === "competitor" ? "var(--competitor)" : signal.type === "patent" ? "var(--patent)" : "var(--market)", backgroundColor: signal.type === "competitor" ? "var(--competitor-bg)" : signal.type === "patent" ? "var(--patent-bg)" : "var(--market-bg)", fontFamily: "var(--font-mono)" }}>
+              {signal.type}
             </span>
           </div>
 
           {/* Title */}
-          <h2 className="text-sm font-semibold leading-snug" style={{ color: "var(--text)" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: 700, lineHeight: 1.3, color: "var(--text)", fontFamily: "var(--font-sans)", marginBottom: "16px" }}>
             {signal.title}
-          </h2>
+          </h1>
 
           {/* Verdict row */}
           {decision && verdictStyle ? (
-            <div className="flex items-center gap-3">
-              <span
-                className="text-xs font-black tracking-tighter px-2.5 py-1 rounded-lg"
-                style={{ color: verdictStyle.color, backgroundColor: verdictStyle.bg, border: `1px solid ${verdictStyle.border}` }}
-              >
-                {decision.verdict.toUpperCase()}
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+              <span style={{
+                fontSize: "15px", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
+                padding: "6px 18px", borderRadius: "8px",
+                color: verdictStyle.color, backgroundColor: verdictStyle.bg, border: `1px solid ${verdictStyle.border}`,
+                fontFamily: "var(--font-sans)",
+              }}>
+                {decision.verdict}
               </span>
-              <span className="text-xs font-semibold" style={{ color: verdictStyle.color }}>
+              <span style={{ fontSize: "14px", fontWeight: 600, color: verdictStyle.color, fontFamily: "var(--font-mono)" }}>
                 {Math.round(decision.confidence * 100)}% confidence
               </span>
               {decision.timeframe && (
-                <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                  · {decision.timeframe}
-                </span>
+                <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>· {decision.timeframe}</span>
               )}
             </div>
           ) : signal.status === "pending" && !isRunning ? (
-            <button
-              onClick={onAnalyze}
-              className="px-4 py-1.5 text-xs font-semibold rounded-lg"
-              style={{ backgroundColor: "var(--viega-yellow)", color: "#000" }}
-            >
+            <button onClick={onAnalyze} style={{ padding: "10px 24px", borderRadius: "8px", backgroundColor: "var(--viega-yellow)", color: "#000", fontSize: "13px", fontWeight: 700, fontFamily: "var(--font-sans)", cursor: "pointer", border: "none" }}>
               ⚡ Analyze with AI
             </button>
           ) : null}
 
-          {/* Running indicator */}
           {isRunning && (
-            <div className="flex items-center gap-2">
-              <div className="spinner shrink-0" />
-              <span className="text-xs" style={{ color: "var(--viega-yellow)" }}>{runningStep}</span>
-            </div>
-          )}
-
-          {/* Key metrics row */}
-          {(decision || analysis) && (
-            <div className="grid grid-cols-3 gap-3 pt-1">
-              {decision && (
-                <div>
-                  <div style={{ fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px", fontFamily: "var(--font-mono)" }}>Impact</div>
-                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
-                    {decision.impactScore}<span style={{ fontSize: "11px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
-                  </div>
-                </div>
-              )}
-              {analysis && (
-                <div>
-                  <div style={{ fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px", fontFamily: "var(--font-mono)" }}>Relevance</div>
-                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--market)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
-                    {Math.round(analysis.relevance * 100)}<span style={{ fontSize: "11px", fontWeight: 400, color: "var(--text-muted)" }}>%</span>
-                  </div>
-                </div>
-              )}
-              {analysis && (
-                <div>
-                  <div style={{ fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "4px", fontFamily: "var(--font-mono)" }}>Urgency</div>
-                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--competitor)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
-                    {Math.round(analysis.urgency * 100)}<span style={{ fontSize: "11px", fontWeight: 400, color: "var(--text-muted)" }}>%</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Score bars */}
-          {analysis && (
-            <div className="space-y-1.5 pt-0.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] w-16 shrink-0" style={{ color: "var(--text-muted)" }}>Relevance</span>
-                <MiniBar value={analysis.relevance} color="var(--market)" />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] w-16 shrink-0" style={{ color: "var(--text-muted)" }}>Urgency</span>
-                <MiniBar value={analysis.urgency} color="var(--competitor)" />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] w-16 shrink-0" style={{ color: "var(--text-muted)" }}>Market</span>
-                <MiniBar value={analysis.marketImpact} color="var(--invest)" />
-              </div>
-            </div>
-          )}
-
-          {/* 1-line summary */}
-          {analysis && (
-            <p className="text-[11px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              {analysis.summary}
-            </p>
-          )}
-
-          {/* Affected products */}
-          {analysis && analysis.affectedProducts.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {analysis.affectedProducts.map((p) => (
-                <span
-                  key={p}
-                  className="text-[10px] px-1.5 py-0.5 rounded"
-                  style={{ backgroundColor: "var(--viega-yellow-dim)", color: "var(--viega-yellow)", border: "1px solid var(--viega-yellow-border)" }}
-                >
-                  {p}
-                </span>
-              ))}
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "12px" }}>
+              <div className="spinner" />
+              <span style={{ fontSize: "13px", color: "var(--viega-yellow)" }}>{runningStep}</span>
             </div>
           )}
         </div>
 
-        {/* ── Toggle buttons ──────────────────────────────────────────── */}
+        {/* ── KPI metrics ────────────────────────────────────────────────── */}
+        {(decision || analysis) && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "28px" }}>
+            {decision && (
+              <div style={{ padding: "20px 24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "8px", fontFamily: "var(--font-mono)" }}>Impact Score</div>
+                <div style={{ fontSize: "40px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                  {decision.impactScore}
+                  <span style={{ fontSize: "16px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
+                </div>
+              </div>
+            )}
+            {analysis && (
+              <div style={{ padding: "20px 24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "8px", fontFamily: "var(--font-mono)" }}>Relevance</div>
+                <div style={{ fontSize: "40px", fontWeight: 700, color: "var(--market)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                  {Math.round(analysis.relevance * 100)}
+                  <span style={{ fontSize: "16px", fontWeight: 400, color: "var(--text-muted)" }}>%</span>
+                </div>
+              </div>
+            )}
+            {analysis && (
+              <div style={{ padding: "20px 24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "8px", fontFamily: "var(--font-mono)" }}>Urgency</div>
+                <div style={{ fontSize: "40px", fontWeight: 700, color: "var(--competitor)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                  {Math.round(analysis.urgency * 100)}
+                  <span style={{ fontSize: "16px", fontWeight: 400, color: "var(--text-muted)" }}>%</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Summary + products ─────────────────────────────────────────── */}
+        {analysis && (
+          <div style={{ padding: "24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)", marginBottom: "28px" }}>
+            <p style={{ fontSize: "14px", lineHeight: 1.7, color: "var(--text-secondary)", fontFamily: "var(--font-sans)", marginBottom: analysis.affectedProducts.length > 0 ? "16px" : "0" }}>
+              {analysis.summary}
+            </p>
+            {analysis.affectedProducts.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                {analysis.affectedProducts.map((p) => (
+                  <span key={p} style={{ fontSize: "11px", fontWeight: 600, padding: "4px 10px", borderRadius: "4px", backgroundColor: "var(--viega-yellow-dim)", color: "var(--viega-yellow)", border: "1px solid var(--viega-yellow-border)", fontFamily: "var(--font-sans)" }}>
+                    {p}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Toggle buttons ─────────────────────────────────────────────── */}
         {decision && (
-          <div className="grid grid-cols-2 gap-2">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "24px" }}>
             {([
               { panel: "debate" as Panel,   label: "Persona-Debatte", icon: "🗣" },
               { panel: "analysis" as Panel, label: "Vollanalyse",     icon: "📋" },
@@ -281,87 +185,76 @@ export function SignalDetail({
               <button
                 key={panel}
                 onClick={() => toggle(panel)}
-                className="flex items-center justify-between transition-all duration-150"
                 style={{
-                  padding: "10px 14px",
-                  borderRadius: "8px",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "14px 20px", borderRadius: "10px",
                   backgroundColor: open === panel ? "var(--viega-yellow)" : "var(--card)",
                   color: open === panel ? "#000" : "var(--text-secondary)",
                   border: `1px solid ${open === panel ? "var(--viega-yellow)" : "var(--border)"}`,
                   boxShadow: open === panel ? "var(--viega-yellow-glow)" : "none",
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "12px",
-                  fontWeight: 600,
+                  fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 600, cursor: "pointer",
+                  transition: "all 0.15s",
                 }}
               >
-                <span>{icon} {label}</span>
-                {open === panel ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                <span>{icon}  {label}</span>
+                {open === panel ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
             ))}
           </div>
         )}
 
-        {/* ── Persona debate panel ────────────────────────────────────── */}
+        {/* ── Persona debate panel ───────────────────────────────────────── */}
         {open === "debate" && personas.length > 0 && (
-          <section className="space-y-2">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "24px" }}>
             {personas.map((p) => {
               const pStyle = PERSONA_STYLES[p.persona as keyof typeof PERSONA_STYLES]
-                ?? { color: "var(--text-muted)", bg: "var(--card)", emoji: "🤖" };
+                ?? { color: "var(--text-muted)", bg: "var(--card)", border: "var(--border)", emoji: "🤖", name: p.personaName, role: "" };
               return (
-                <div
-                  key={p.id}
-                  className="p-3 rounded-lg fade-up"
-                  style={{ backgroundColor: pStyle.bg, border: `1px solid ${pStyle.color}22` }}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm">{pStyle.emoji}</span>
-                      <span className="text-xs font-semibold" style={{ color: pStyle.color }}>
-                        {p.personaName}
-                      </span>
+                <div key={p.id} className="fade-up" style={{ padding: "20px", borderRadius: "12px", backgroundColor: pStyle.bg, border: `1px solid ${pStyle.border}`, display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: `${pStyle.color}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
+                        {pStyle.emoji}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "13px", fontWeight: 700, color: pStyle.color, fontFamily: "var(--font-sans)" }}>{pStyle.name}</div>
+                        <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{pStyle.role}</div>
+                      </div>
                     </div>
-                    <span className="text-[10px] font-semibold" style={{ color: STANCE_COLORS[p.stance] ?? "var(--text-muted)" }}>
+                    <span style={{ fontSize: "10px", fontWeight: 700, color: STANCE_COLORS[p.stance] ?? "var(--text-muted)", letterSpacing: "0.06em", textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>
                       {STANCE_LABELS[p.stance] ?? p.stance}
                     </span>
                   </div>
-                  <blockquote
-                    className="text-xs italic pl-2 mb-1.5"
-                    style={{ color: "var(--text)", borderLeft: `2px solid ${pStyle.color}` }}
-                  >
+                  <blockquote style={{ fontSize: "13px", fontStyle: "italic", lineHeight: 1.6, color: "var(--text)", paddingLeft: "12px", borderLeft: `3px solid ${pStyle.color}`, margin: 0 }}>
                     &ldquo;{p.quote}&rdquo;
                   </blockquote>
-                  <p className="text-[11px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                  <p style={{ fontSize: "12px", lineHeight: 1.7, color: "var(--text-muted)", margin: 0 }}>
                     {p.argument}
                   </p>
                 </div>
               );
             })}
-          </section>
+          </div>
         )}
 
-        {/* ── Full analysis panel ─────────────────────────────────────── */}
+        {/* ── Full analysis panel ────────────────────────────────────────── */}
         {open === "analysis" && decision && (
-          <section className="space-y-3">
-            {/* Decision reasoning */}
-            <div
-              className="p-4 rounded-xl"
-              style={{ backgroundColor: verdictStyle?.bg, border: `1px solid ${verdictStyle?.border}` }}
-            >
-              <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: verdictStyle?.color }}>
-                Reasoning
-              </p>
-              <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+
+            {/* Reasoning */}
+            <div style={{ padding: "24px", borderRadius: "12px", backgroundColor: verdictStyle?.bg, border: `1px solid ${verdictStyle?.border}` }}>
+              <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: verdictStyle?.color, marginBottom: "12px", fontFamily: "var(--font-mono)" }}>
+                AI Reasoning
+              </div>
+              <p style={{ fontSize: "14px", lineHeight: 1.7, color: "var(--text-secondary)" }}>
                 {decision.reasoning}
               </p>
               {decision.productIdea && (
-                <div
-                  className="mt-3 p-3 rounded-lg"
-                  style={{ backgroundColor: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)" }}
-                >
-                  <p className="text-[10px] font-semibold tracking-widest uppercase mb-1" style={{ color: "var(--viega-yellow)" }}>
+                <div style={{ marginTop: "16px", padding: "16px", borderRadius: "8px", backgroundColor: "var(--viega-yellow-dim)", border: "1px solid var(--viega-yellow-border)" }}>
+                  <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", color: "var(--viega-yellow)", marginBottom: "8px", fontFamily: "var(--font-mono)" }}>
                     💡 Product Idea
-                  </p>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                  </div>
+                  <p style={{ fontSize: "14px", lineHeight: 1.7, color: "var(--text-secondary)" }}>
                     {decision.productIdea}
                   </p>
                 </div>
@@ -370,97 +263,90 @@ export function SignalDetail({
 
             {/* Impact breakdown */}
             {decision.impactBreakdown && (
-              <ImpactBreakdownPanel
-                breakdown={decision.impactBreakdown}
-                total={decision.impactScore}
-              />
+              <div style={{ padding: "24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                  <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+                    Impact Score Breakdown
+                  </div>
+                  <div style={{ fontSize: "28px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                    {decision.impactScore}<span style={{ fontSize: "13px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  {BREAKDOWN_DIMS.map(({ key, label, weight, color }) => {
+                    const dim = decision.impactBreakdown![key];
+                    const pct = (dim.score / 5) * 100;
+                    return (
+                      <div key={key}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)" }}>{label}</span>
+                            <span style={{ fontSize: "9px", fontWeight: 700, padding: "1px 5px", borderRadius: "3px", backgroundColor: `${color}14`, color, fontFamily: "var(--font-mono)" }}>{weight}</span>
+                          </div>
+                          <span style={{ fontSize: "13px", fontWeight: 700, color, fontFamily: "var(--font-mono)" }}>{dim.score}/5</span>
+                        </div>
+                        <div style={{ height: "4px", borderRadius: "2px", backgroundColor: "var(--border)", marginBottom: "8px", overflow: "hidden" }}>
+                          <div className="bar-fill" style={{ height: "100%", borderRadius: "2px", width: `${pct}%`, backgroundColor: color, boxShadow: `0 0 8px ${color}50` }} />
+                        </div>
+                        <p style={{ fontSize: "12px", lineHeight: 1.5, color: "var(--text-muted)" }}>{dim.rationale}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
             {/* Key insights */}
             {analysis && analysis.keyInsights.length > 0 && (
-              <div
-                className="p-4 rounded-xl space-y-2"
-                style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
-              >
-                <p className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "var(--text-muted)" }}>
+              <div style={{ padding: "24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "16px", fontFamily: "var(--font-mono)" }}>
                   Key Insights
-                </p>
-                {analysis.keyInsights.map((insight, i) => (
-                  <div key={i} className="flex gap-2 text-xs">
-                    <span style={{ color: "var(--viega-yellow)" }} className="shrink-0 font-bold">›</span>
-                    <span style={{ color: "var(--text-secondary)" }}>{insight}</span>
-                  </div>
-                ))}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {analysis.keyInsights.map((insight, i) => (
+                    <div key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                      <span style={{ color: "var(--viega-yellow)", fontWeight: 700, fontSize: "16px", lineHeight: 1, flexShrink: 0, marginTop: "1px" }}>›</span>
+                      <span style={{ fontSize: "13px", lineHeight: 1.6, color: "var(--text-secondary)" }}>{insight}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Human-in-the-loop */}
-            <div
-              className="p-4 rounded-xl"
-              style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
-            >
-              <p className="text-[10px] font-semibold tracking-widest uppercase mb-3" style={{ color: "var(--text-muted)" }}>
+            <div style={{ padding: "24px", borderRadius: "12px", backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+              <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "16px", fontFamily: "var(--font-mono)" }}>
                 Your Verdict
-              </p>
-              <div className="flex gap-2 mb-3">
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "16px" }}>
                 {[
-                  { action: "approve", icon: ThumbsUp,    color: "var(--build)",      label: "Approve" },
-                  { action: "reject",  icon: ThumbsDown,  color: "var(--competitor)", label: "Reject" },
-                  { action: "boost",   icon: TrendingUp,  color: "var(--invest)",     label: "Boost" },
+                  { action: "approve", icon: ThumbsUp,   color: "var(--build)",      label: "Approve" },
+                  { action: "reject",  icon: ThumbsDown, color: "var(--competitor)", label: "Reject" },
+                  { action: "boost",   icon: TrendingUp, color: "var(--invest)",     label: "Boost" },
                 ].map(({ action, icon: Icon, color, label }) => (
-                  <button
-                    key={action}
-                    onClick={() => handleFeedback(action, false)}
-                    disabled={isRunning}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all"
-                    style={{
-                      backgroundColor: lastAction === action ? color : `${color}12`,
-                      color: lastAction === action ? "#000" : color,
-                      border: `1px solid ${color}40`,
-                      opacity: isRunning ? 0.5 : 1,
-                    }}
-                  >
-                    <Icon size={12} />
-                    {label}
+                  <button key={action} onClick={() => handleFeedback(action, false)} disabled={isRunning}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", borderRadius: "8px", fontSize: "13px", fontWeight: 600, cursor: isRunning ? "not-allowed" : "pointer", transition: "all 0.15s", backgroundColor: lastAction === action ? color : `${color}12`, color: lastAction === action ? "#000" : color, border: `1px solid ${color}40`, opacity: isRunning ? 0.5 : 1, fontFamily: "var(--font-sans)" }}>
+                    <Icon size={14} />{label}
                   </button>
                 ))}
               </div>
-
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>Importance</span>
-                <div className="flex gap-1.5">
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Importance</span>
+                <div style={{ display: "flex", gap: "8px" }}>
                   {[1, 2, 3, 4, 5].map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => setImportance(d)}
-                      className="w-3.5 h-3.5 rounded-full transition-all"
-                      style={{
-                        backgroundColor: d <= importance ? "var(--viega-yellow)" : "var(--border)",
-                        transform: d <= importance ? "scale(1.1)" : "scale(1)",
-                      }}
-                    />
+                    <button key={d} onClick={() => setImportance(d)}
+                      style={{ width: "14px", height: "14px", borderRadius: "50%", cursor: "pointer", border: "none", transition: "all 0.15s", backgroundColor: d <= importance ? "var(--viega-yellow)" : "var(--border)", transform: d <= importance ? "scale(1.15)" : "scale(1)" }} />
                   ))}
                 </div>
-                <span className="text-[11px] font-semibold" style={{ color: "var(--viega-yellow)" }}>
-                  {importance}/5
-                </span>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--viega-yellow)", fontFamily: "var(--font-mono)" }}>{importance}/5</span>
               </div>
-
-              <button
-                onClick={() => handleFeedback("boost", true)}
-                disabled={isRunning}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all"
-                style={{
-                  backgroundColor: isRunning ? "var(--border)" : "var(--viega-yellow)",
-                  color: isRunning ? "var(--text-muted)" : "#000",
-                  cursor: isRunning ? "not-allowed" : "pointer",
-                }}
-              >
-                <RotateCcw size={12} />
+              <button onClick={() => handleFeedback("boost", true)} disabled={isRunning}
+                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "13px", borderRadius: "8px", fontSize: "13px", fontWeight: 700, cursor: isRunning ? "not-allowed" : "pointer", backgroundColor: isRunning ? "var(--border)" : "var(--viega-yellow)", color: isRunning ? "var(--text-muted)" : "#000", border: "none", fontFamily: "var(--font-sans)", transition: "all 0.15s" }}>
+                <RotateCcw size={14} />
                 {isRunning ? runningStep : "Re-analyze with My Input"}
               </button>
             </div>
-          </section>
+          </div>
         )}
       </div>
     </div>
