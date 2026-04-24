@@ -32,8 +32,8 @@ export async function GET() {
 
   return NextResponse.json(parsed);
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[GET /api/signals]", e);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
