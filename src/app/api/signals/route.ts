@@ -4,6 +4,7 @@ import { normalizeUrl } from "@/lib/ai/research";
 import { z } from "zod";
 
 export async function GET() {
+  try {
   const signals = await prisma.signal.findMany({
     orderBy: { createdAt: "desc" },
     include: {
@@ -30,6 +31,10 @@ export async function GET() {
   }));
 
   return NextResponse.json(parsed);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }
 
 const CreateSignalSchema = z.object({
