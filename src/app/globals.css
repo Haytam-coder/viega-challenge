@@ -64,6 +64,15 @@
 
   /* Sidebar */
   --sidebar-width: 240px;
+
+  /* Shadows */
+  --card-shadow: 6px 6px 54px rgba(0, 0, 0, 0.28);
+
+  /* Accent blue */
+  --accent: #4880FF;
+  --accent-bg: rgba(72, 128, 255, 0.1);
+  --teal: #00B69B;
+  --teal-bg: rgba(0, 182, 155, 0.1);
 }
 
 /* ── Light mode ─────────────────────────────────────────────────────────── */
@@ -99,6 +108,12 @@
   --invest-border: rgba(245, 158, 11, 0.25);
   --ignore-bg: rgba(107, 114, 128, 0.08);
   --ignore-border: rgba(107, 114, 128, 0.2);
+
+  --card-shadow: 6px 6px 54px rgba(0, 0, 0, 0.06);
+  --accent: #4880FF;
+  --accent-bg: rgba(72, 128, 255, 0.08);
+  --teal: #00B69B;
+  --teal-bg: rgba(0, 182, 155, 0.08);
 
   --innovator-bg: rgba(59, 130, 246, 0.07);
   --innovator-border: rgba(59, 130, 246, 0.18);
