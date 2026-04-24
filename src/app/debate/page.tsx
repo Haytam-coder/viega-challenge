@@ -48,7 +48,7 @@ const STANCE_RANK: Record<string, number> = {
 };
 
 const VERDICT_STYLES = {
-  Build: { color: "var(--build)", bg: "var(--build-bg)", border: "var(--build-border)" },
+  Build:  { color: "var(--build)",  bg: "var(--build-bg)",  border: "var(--build-border)" },
   Invest: { color: "var(--invest)", bg: "var(--invest-bg)", border: "var(--invest-border)" },
   Ignore: { color: "var(--ignore)", bg: "var(--ignore-bg)", border: "var(--ignore-border)" },
 };
@@ -56,26 +56,16 @@ const VERDICT_STYLES = {
 function StanceBar({ stance }: { stance: string }) {
   const rank = STANCE_RANK[stance] ?? 0;
   const pct = ((rank + 2) / 4) * 100;
-  const color =
-    rank >= 1 ? "var(--build)" : rank <= -1 ? "var(--competitor)" : "var(--text-muted)";
+  const color = rank >= 1 ? "var(--build)" : rank <= -1 ? "var(--competitor)" : "var(--text-muted)";
   return (
-    <div className="mt-3">
-      <div className="flex justify-between mb-1">
-        <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
-          Oppose
-        </span>
-        <span className="text-[10px] font-semibold" style={{ color }}>
-          {STANCE_LABELS[stance] ?? stance}
-        </span>
-        <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
-          Support
-        </span>
+    <div style={{ marginTop: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+        <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>Oppose</span>
+        <span style={{ fontSize: "11px", fontWeight: 600, color }}>{STANCE_LABELS[stance] ?? stance}</span>
+        <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>Support</span>
       </div>
-      <div className="h-1 rounded-full" style={{ backgroundColor: "var(--border)" }}>
-        <div
-          className="h-1 rounded-full transition-all duration-700"
-          style={{ width: `${pct}%`, backgroundColor: color }}
-        />
+      <div style={{ height: "6px", borderRadius: "4px", backgroundColor: "var(--border)" }}>
+        <div style={{ height: "100%", width: `${pct}%`, borderRadius: "4px", backgroundColor: color, transition: "width 0.7s ease" }} />
       </div>
     </div>
   );
@@ -86,36 +76,29 @@ function ConsensusBar({ personas }: { personas: PersonaArgument[] }) {
   const avg = personas.reduce((sum, p) => sum + (STANCE_RANK[p.stance] ?? 0), 0) / personas.length;
   const pct = ((avg + 2) / 4) * 100;
   const color = avg >= 0.5 ? "var(--build)" : avg <= -0.5 ? "var(--competitor)" : "var(--invest)";
-  const label =
-    avg >= 1 ? "Strong Consensus to Act" : avg >= 0 ? "Lean Toward Action" : avg >= -1 ? "Mixed Views" : "Lean Against";
+  const label = avg >= 1 ? "Strong Consensus to Act" : avg >= 0 ? "Lean Toward Action" : avg >= -1 ? "Mixed Views" : "Lean Against";
 
   return (
     <div
-      className="p-4 rounded-xl"
-      style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+      style={{
+        padding: "24px 28px",
+        borderRadius: "14px",
+        backgroundColor: "var(--card)",
+        boxShadow: "var(--card-shadow)",
+      }}
     >
-      <p
-        className="text-[11px] font-semibold tracking-widest uppercase mb-3"
-        style={{ color: "var(--text-muted)" }}
-      >
-        Consensus Meter
-      </p>
-      <div className="flex justify-between mb-1.5">
-        <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-          Oppose
-        </span>
-        <span className="text-sm font-bold" style={{ color }}>
-          {label}
-        </span>
-        <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-          Support
-        </span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+        <h3 style={{ fontSize: "16px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-sans)" }}>
+          Consensus Meter
+        </h3>
+        <span style={{ fontSize: "14px", fontWeight: 700, color }}>{label}</span>
       </div>
-      <div className="h-2 rounded-full" style={{ backgroundColor: "var(--border)" }}>
-        <div
-          className="h-2 rounded-full transition-all duration-700"
-          style={{ width: `${pct}%`, backgroundColor: color }}
-        />
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+        <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Oppose</span>
+        <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Support</span>
+      </div>
+      <div style={{ height: "10px", borderRadius: "6px", backgroundColor: "var(--border)" }}>
+        <div style={{ height: "100%", width: `${pct}%`, borderRadius: "6px", backgroundColor: color, transition: "width 0.7s ease" }} />
       </div>
     </div>
   );
@@ -140,129 +123,140 @@ export default function DebatePage() {
   const selected = signals.find((s) => s.id === selectedId);
   const decision = selected?.decision;
   const personas = decision?.personas ?? [];
-  const verdictStyle = decision
-    ? VERDICT_STYLES[decision.verdict as keyof typeof VERDICT_STYLES]
-    : null;
-
-  const personaOrder: Array<keyof typeof PERSONA_STYLES> = [
-    "innovator",
-    "traditionalist",
-    "analyst",
-  ];
+  const verdictStyle = decision ? VERDICT_STYLES[decision.verdict as keyof typeof VERDICT_STYLES] : null;
+  const personaOrder: Array<keyof typeof PERSONA_STYLES> = ["innovator", "traditionalist", "analyst"];
 
   return (
-    <div className="flex flex-col h-full" style={{ backgroundColor: "var(--bg)" }}>
-      {/* Page header */}
-      <div
-        className="shrink-0 px-8 py-5"
-        style={{ borderBottom: "1px solid var(--border)" }}
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold" style={{ color: "var(--text)" }}>
-              Agent Debate
-            </h1>
-            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-              AI persona deliberation — transparent reasoning from three strategic voices
-            </p>
-          </div>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", backgroundColor: "var(--bg)" }}>
 
-          {/* Signal selector */}
-          {signals.length > 0 && (
-            <div className="relative">
-              <select
-                value={selectedId ?? ""}
-                onChange={(e) => setSelectedId(e.target.value)}
-                className="appearance-none pr-8 pl-3 py-2 rounded-lg text-sm font-medium cursor-pointer"
-                style={{
-                  backgroundColor: "var(--card)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text)",
-                  outline: "none",
-                  minWidth: 280,
-                }}
-              >
-                {signals.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.title.length > 60 ? s.title.slice(0, 60) + "…" : s.title}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                size={14}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-                style={{ color: "var(--text-muted)" }}
-              />
-            </div>
-          )}
+      {/* ── Header ─────────────────────────────────────────────── */}
+      <div
+        style={{
+          padding: "20px 28px 16px",
+          borderBottom: "0.6px solid var(--border)",
+          backgroundColor: "var(--card)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexShrink: 0,
+        }}
+      >
+        <div>
+          <h1 style={{ fontSize: "26px", fontWeight: 800, color: "var(--text)", letterSpacing: "-0.3px", lineHeight: 1.1, fontFamily: "var(--font-sans)" }}>
+            Agent Debate
+          </h1>
+          <p style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "3px" }}>
+            AI persona deliberation — transparent reasoning from three strategic voices
+          </p>
         </div>
+
+        {signals.length > 0 && (
+          <div style={{ position: "relative" }}>
+            <select
+              value={selectedId ?? ""}
+              onChange={(e) => setSelectedId(e.target.value)}
+              style={{
+                appearance: "none",
+                paddingRight: "36px",
+                paddingLeft: "14px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: 500,
+                cursor: "pointer",
+                backgroundColor: "var(--surface)",
+                border: "0.6px solid var(--border)",
+                color: "var(--text)",
+                outline: "none",
+                minWidth: "280px",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
+              {signals.map((s) => (
+                <option key={s.id} value={s.id} style={{ backgroundColor: "var(--card)", color: "var(--text)" }}>
+                  {s.title.length > 60 ? s.title.slice(0, 60) + "…" : s.title}
+                </option>
+              ))}
+            </select>
+            <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "var(--text-muted)" }} />
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-8">
+      {/* ── Content ────────────────────────────────────────────── */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 36px", display: "flex", flexDirection: "column", gap: "20px" }}>
         {loading ? (
-          <div className="flex flex-col gap-4">
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {[1, 2, 3].map((i) => (
-              <div key={i} className="skeleton h-48 rounded-xl" />
+              <div key={i} className="skeleton" style={{ height: "180px", borderRadius: "14px" }} />
             ))}
           </div>
         ) : signals.length === 0 ? (
           <div
-            className="flex flex-col items-center justify-center h-64 rounded-2xl"
-            style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "240px",
+              borderRadius: "14px",
+              backgroundColor: "var(--card)",
+              boxShadow: "var(--card-shadow)",
+              gap: "12px",
+            }}
           >
-            <MessageSquare size={32} style={{ color: "var(--text-muted)" }} className="mb-3" />
-            <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-              No analyzed signals yet
-            </p>
-            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
-              Run the AI pipeline on a signal from the Dashboard first.
-            </p>
+            <MessageSquare size={32} style={{ color: "var(--text-muted)" }} />
+            <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-secondary)" }}>No analyzed signals yet</p>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>Run the AI pipeline on a signal from the Dashboard first.</p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {/* Signal context */}
+          <>
+            {/* Signal context card */}
             {selected && (
               <div
-                className="p-4 rounded-xl"
-                style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+                style={{
+                  padding: "24px 28px",
+                  borderRadius: "14px",
+                  backgroundColor: "var(--card)",
+                  boxShadow: "var(--card-shadow)",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: "24px",
+                }}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p
-                      className="text-[11px] font-semibold tracking-widest uppercase mb-1.5"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {selected.source}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "6px", fontFamily: "var(--font-mono)" }}>
+                    {selected.source}
+                  </p>
+                  <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--text)", lineHeight: 1.3, fontFamily: "var(--font-sans)" }}>
+                    {selected.title}
+                  </h2>
+                  {decision && (
+                    <p style={{ fontSize: "13px", lineHeight: 1.6, color: "var(--text-secondary)", marginTop: "10px" }}>
+                      {decision.reasoning}
                     </p>
-                    <h2 className="text-base font-semibold" style={{ color: "var(--text)" }}>
-                      {selected.title}
-                    </h2>
-                  </div>
-                  {decision && verdictStyle && (
-                    <div
-                      className="shrink-0 px-4 py-2 rounded-lg text-center"
-                      style={{
-                        backgroundColor: verdictStyle.bg,
-                        border: `1px solid ${verdictStyle.border}`,
-                      }}
-                    >
-                      <div
-                        className="text-lg font-black tracking-tighter"
-                        style={{ color: verdictStyle.color }}
-                      >
-                        {decision.verdict.toUpperCase()}
-                      </div>
-                      <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>
-                        {Math.round(decision.confidence * 100)}% confidence
-                      </div>
-                    </div>
                   )}
                 </div>
-                {decision && (
-                  <p className="text-xs mt-3 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                    {decision.reasoning}
-                  </p>
+                {decision && verdictStyle && (
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      padding: "16px 24px",
+                      borderRadius: "12px",
+                      textAlign: "center",
+                      backgroundColor: verdictStyle.bg,
+                      border: `1px solid ${verdictStyle.border}`,
+                    }}
+                  >
+                    <div style={{ fontSize: "22px", fontWeight: 900, letterSpacing: "-0.02em", color: verdictStyle.color, fontFamily: "var(--font-sans)" }}>
+                      {decision.verdict.toUpperCase()}
+                    </div>
+                    <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                      {Math.round(decision.confidence * 100)}% confidence
+                    </div>
+                  </div>
                 )}
               </div>
             )}
@@ -270,7 +264,7 @@ export default function DebatePage() {
             {/* Persona columns */}
             {personas.length > 0 ? (
               <>
-                <div className="grid grid-cols-3 gap-4">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
                   {personaOrder.map((personaKey) => {
                     const p = personas.find((x) => x.persona === personaKey);
                     const style = PERSONA_STYLES[personaKey];
@@ -278,31 +272,40 @@ export default function DebatePage() {
                     return (
                       <div
                         key={personaKey}
-                        className="p-4 rounded-xl flex flex-col gap-3 fade-up"
+                        className="fade-up"
                         style={{
-                          backgroundColor: style.bg,
+                          padding: "24px",
+                          borderRadius: "14px",
+                          backgroundColor: "var(--card)",
+                          boxShadow: "var(--card-shadow)",
                           border: `1px solid ${style.border}`,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "16px",
                         }}
                       >
                         {/* Persona header */}
-                        <div className="flex items-center gap-2.5">
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <div
-                            className="w-9 h-9 rounded-full flex items-center justify-center text-lg shrink-0"
-                            style={{ backgroundColor: `${style.color}18` }}
+                            style={{
+                              width: "44px",
+                              height: "44px",
+                              borderRadius: "12px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "20px",
+                              backgroundColor: style.bg,
+                              flexShrink: 0,
+                            }}
                           >
                             {style.emoji}
                           </div>
                           <div>
-                            <div
-                              className="text-sm font-bold"
-                              style={{ color: style.color }}
-                            >
+                            <div style={{ fontSize: "15px", fontWeight: 700, color: style.color, fontFamily: "var(--font-sans)" }}>
                               {style.name}
                             </div>
-                            <div
-                              className="text-[10px] font-medium"
-                              style={{ color: "var(--text-muted)" }}
-                            >
+                            <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>
                               {style.role}
                             </div>
                           </div>
@@ -310,9 +313,13 @@ export default function DebatePage() {
 
                         {/* Quote */}
                         <blockquote
-                          className="text-xs italic leading-relaxed px-3 py-2 rounded-lg"
                           style={{
-                            backgroundColor: `${style.color}0D`,
+                            fontSize: "13px",
+                            fontStyle: "italic",
+                            lineHeight: 1.6,
+                            padding: "12px 14px",
+                            borderRadius: "8px",
+                            backgroundColor: style.bg,
                             borderLeft: `3px solid ${style.color}`,
                             color: "var(--text)",
                           }}
@@ -321,51 +328,50 @@ export default function DebatePage() {
                         </blockquote>
 
                         {/* Argument */}
-                        <p
-                          className="text-[12px] leading-relaxed flex-1"
-                          style={{ color: "var(--text-secondary)" }}
-                        >
+                        <p style={{ fontSize: "13px", lineHeight: 1.6, color: "var(--text-secondary)", flex: 1 }}>
                           {p.argument}
                         </p>
 
-                        {/* Stance bar */}
                         <StanceBar stance={p.stance} />
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Consensus meter */}
                 <ConsensusBar personas={personas} />
 
                 {/* Product idea */}
                 {decision?.productIdea && (
                   <div
-                    className="p-4 rounded-xl"
                     style={{
+                      padding: "24px 28px",
+                      borderRadius: "14px",
                       backgroundColor: "var(--card)",
-                      border: "1px solid var(--viega-yellow-border)",
+                      boxShadow: "var(--card-shadow)",
+                      border: "1px solid var(--border)",
                     }}
                   >
-                    <p
-                      className="text-[11px] font-semibold tracking-widest uppercase mb-2"
-                      style={{ color: "var(--viega-yellow)" }}
-                    >
-                      💡 Synthesized Product Idea
-                    </p>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                      <span style={{ fontSize: "18px" }}>💡</span>
+                      <h3 style={{ fontSize: "16px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-sans)" }}>
+                        Synthesized Product Idea
+                      </h3>
+                    </div>
+                    <p style={{ fontSize: "14px", lineHeight: 1.7, color: "var(--text-secondary)" }}>
                       {decision.productIdea}
                     </p>
-                    <div className="flex gap-4 mt-3 text-xs" style={{ color: "var(--text-muted)" }}>
-                      <span>
-                        Impact{" "}
-                        <b style={{ color: "var(--text)" }}>{decision.impactScore}/10</b>
-                      </span>
-                      {decision.timeframe && (
-                        <span>
-                          Timeframe{" "}
-                          <b style={{ color: "var(--text)" }}>{decision.timeframe}</b>
+                    <div style={{ display: "flex", gap: "24px", marginTop: "14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Impact Score</span>
+                        <span style={{ fontSize: "18px", fontWeight: 800, color: "var(--text)", fontFamily: "var(--font-mono)" }}>
+                          {decision.impactScore}<span style={{ fontSize: "12px", fontWeight: 400, color: "var(--text-muted)" }}>/10</span>
                         </span>
+                      </div>
+                      {decision.timeframe && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Timeframe</span>
+                          <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>{decision.timeframe}</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -373,15 +379,20 @@ export default function DebatePage() {
               </>
             ) : (
               <div
-                className="flex items-center justify-center h-32 rounded-xl"
-                style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "120px",
+                  borderRadius: "14px",
+                  backgroundColor: "var(--card)",
+                  boxShadow: "var(--card-shadow)",
+                }}
               >
-                <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-                  No persona debate available for this signal.
-                </p>
+                <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>No persona debate available for this signal.</p>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   useEffect(() => {
     const saved = localStorage.getItem("theme") as "dark" | "light" | null;
-    const initial = saved ?? "dark";
+    const initial = saved ?? "light";
     setTheme(initial);
     document.documentElement.setAttribute("data-theme", initial);
   }, []);
@@ -25,14 +25,14 @@ export function ThemeToggle() {
       onClick={toggle}
       title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       style={{
-        width: "28px",
-        height: "28px",
-        borderRadius: "6px",
+        width: "30px",
+        height: "30px",
+        borderRadius: "8px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "var(--surface)",
-        border: "1px solid var(--border)",
+        border: "0.6px solid var(--border)",
         color: "var(--text-muted)",
         cursor: "pointer",
         transition: "all 0.15s",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessagesSquare, Zap, Globe, BarChart2 } from "lucide-react";
+import { LayoutDashboard, MessagesSquare, Globe, BarChart2 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
@@ -17,88 +17,86 @@ export function Sidebar() {
 
   return (
     <aside
-      className="sticky top-0 h-screen shrink-0 flex flex-col z-50"
       style={{
+        position: "sticky",
+        top: 0,
+        height: "100vh",
         width: "var(--sidebar-width)",
+        flexShrink: 0,
+        display: "flex",
+        flexDirection: "column",
+        zIndex: 50,
         backgroundColor: "var(--sidebar-bg)",
-        borderRight: "1px solid var(--border-light)",
+        borderRight: "0.6px solid var(--border)",
       }}
     >
       {/* Logo */}
-      <div className="px-5 pt-7 pb-6">
-        <div className="flex items-center gap-3">
+      <div style={{ padding: "24px 20px 20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div
-            className="w-8 h-8 rounded flex items-center justify-center shrink-0"
-            style={{ backgroundColor: "var(--viega-yellow)" }}
+            style={{
+              width: "34px",
+              height: "34px",
+              borderRadius: "8px",
+              backgroundColor: "#ffe600",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
           >
-            <span style={{ color: "#000", fontWeight: 900, fontSize: "15px", letterSpacing: "-0.04em", fontFamily: "var(--font-sans)" }}>V</span>
+            <span style={{ color: "#000", fontWeight: 900, fontSize: "16px", letterSpacing: "-0.04em" }}>V</span>
           </div>
           <div>
-            <div
-              style={{
-                color: "var(--text)",
-                fontWeight: 700,
-                fontSize: "13px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontFamily: "var(--font-sans)",
-              }}
-            >
+            <div style={{ color: "var(--text)", fontWeight: 800, fontSize: "14px", letterSpacing: "0.04em", fontFamily: "var(--font-sans)" }}>
               Viega
             </div>
-            <div style={{ color: "var(--text-muted)", fontSize: "10px", letterSpacing: "0.06em" }}>
+            <div style={{ color: "var(--text-muted)", fontSize: "11px", letterSpacing: "0.04em" }}>
               Compass
             </div>
           </div>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="mx-5 mb-4" style={{ height: "1px", backgroundColor: "var(--border-light)" }} />
-
       {/* Section label */}
-      <div className="px-5 mb-2">
-        <span
-          style={{
-            fontSize: "9px",
-            fontWeight: 700,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "var(--text-muted)",
-            fontFamily: "var(--font-mono)",
-          }}
-        >
+      <div style={{ padding: "0 20px 8px" }}>
+        <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
           Navigation
         </span>
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 px-3 space-y-0.5">
+      <nav style={{ flex: 1, padding: "0 10px", display: "flex", flexDirection: "column", gap: "2px" }}>
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-150"
               style={{
-                backgroundColor: active ? "var(--viega-yellow-dim)" : "transparent",
-                borderLeft: active ? "2px solid var(--viega-yellow)" : "2px solid transparent",
-                boxShadow: active ? "var(--viega-yellow-glow)" : "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "10px 12px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                transition: "all 0.12s",
+                backgroundColor: active ? "var(--accent)" : "transparent",
               }}
             >
               <Icon
-                size={14}
+                size={15}
                 style={{
-                  color: active ? "var(--viega-yellow)" : "var(--text-muted)",
+                  color: active ? "#ffffff" : "var(--text-muted)",
                   strokeWidth: active ? 2.5 : 1.8,
+                  flexShrink: 0,
                 }}
               />
               <span
                 style={{
                   fontSize: "13px",
-                  fontWeight: active ? 600 : 400,
-                  color: active ? "var(--viega-yellow)" : "var(--text-secondary)",
+                  fontWeight: active ? 700 : 500,
+                  color: active ? "#ffffff" : "var(--text-secondary)",
                   letterSpacing: active ? "0.01em" : "0",
                   fontFamily: "var(--font-sans)",
                 }}
@@ -111,25 +109,27 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 mx-3 mb-4 rounded-lg" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border-light)" }}>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
+      <div style={{ margin: "0 10px 16px", padding: "14px 12px", borderRadius: "10px", backgroundColor: "var(--surface)", border: "0.6px solid var(--border)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <div
-              className="w-1.5 h-1.5 rounded-full shrink-0"
-              style={{ backgroundColor: "var(--build)", animation: "pulseGreen 2s ease-in-out infinite" }}
+              style={{
+                width: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                backgroundColor: "var(--build)",
+                animation: "pulseGreen 2s ease-in-out infinite",
+              }}
             />
-            <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--build)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--build)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Live
             </span>
           </div>
           <ThemeToggle />
         </div>
-        <div className="flex items-center gap-1.5">
-          <Zap size={9} style={{ color: "var(--text-muted)" }} />
-          <span style={{ fontSize: "10px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
-            gemini-2.5-flash
-          </span>
-        </div>
+        <span style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+          gemini-2.5-flash
+        </span>
       </div>
     </aside>
   );
