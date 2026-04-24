@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, MessagesSquare, Zap, Globe, BarChart2 } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
   { href: "/overview", label: "Overview",     icon: BarChart2 },
@@ -111,14 +112,17 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 mx-3 mb-4 rounded-lg" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border-light)" }}>
-        <div className="flex items-center gap-2 mb-2">
-          <div
-            className="w-1.5 h-1.5 rounded-full shrink-0"
-            style={{ backgroundColor: "var(--build)", animation: "pulseGreen 2s ease-in-out infinite" }}
-          />
-          <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--build)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-            Live
-          </span>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ backgroundColor: "var(--build)", animation: "pulseGreen 2s ease-in-out infinite" }}
+            />
+            <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--build)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+              Live
+            </span>
+          </div>
+          <ThemeToggle />
         </div>
         <div className="flex items-center gap-1.5">
           <Zap size={9} style={{ color: "var(--text-muted)" }} />

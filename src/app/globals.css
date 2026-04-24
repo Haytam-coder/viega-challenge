@@ -66,6 +66,52 @@
   --sidebar-width: 240px;
 }
 
+/* ── Light mode ─────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --viega-yellow-dim: rgba(200, 180, 0, 0.1);
+  --viega-yellow-border: rgba(180, 160, 0, 0.25);
+  --viega-yellow-glow: 0 0 24px rgba(200, 180, 0, 0.15);
+
+  --bg: #f4f3ef;
+  --sidebar-bg: #eceae4;
+  --surface: #f9f8f5;
+  --card: #ffffff;
+  --card-hover: #f5f4f0;
+  --card-active: #fffef0;
+
+  --border: #d8d6cf;
+  --border-light: #e6e4de;
+
+  --text: #111111;
+  --text-secondary: #444444;
+  --text-muted: #888888;
+
+  --competitor-bg: rgba(239, 68, 68, 0.08);
+  --competitor-border: rgba(239, 68, 68, 0.2);
+  --market-bg: rgba(59, 130, 246, 0.08);
+  --market-border: rgba(59, 130, 246, 0.2);
+  --patent-bg: rgba(139, 92, 246, 0.08);
+  --patent-border: rgba(139, 92, 246, 0.2);
+
+  --build-bg: rgba(34, 197, 94, 0.08);
+  --build-border: rgba(34, 197, 94, 0.25);
+  --invest-bg: rgba(245, 158, 11, 0.08);
+  --invest-border: rgba(245, 158, 11, 0.25);
+  --ignore-bg: rgba(107, 114, 128, 0.08);
+  --ignore-border: rgba(107, 114, 128, 0.2);
+
+  --innovator-bg: rgba(59, 130, 246, 0.07);
+  --innovator-border: rgba(59, 130, 246, 0.18);
+  --traditionalist-bg: rgba(139, 92, 246, 0.07);
+  --traditionalist-border: rgba(139, 92, 246, 0.18);
+  --analyst-bg: rgba(245, 158, 11, 0.07);
+  --analyst-border: rgba(245, 158, 11, 0.18);
+}
+
+[data-theme="light"] body {
+  background-image: radial-gradient(circle, #ccc9be 1px, transparent 1px);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
