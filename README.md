@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Market Intelligence — Futury × Viega Hackathon
 
-## Getting Started
+> **Live:** [viega-challenge.vercel.app](https://viega-challenge.vercel.app)
 
-First, run the development server:
+A full-stack AI-powered market intelligence platform built in 48 hours at the Futury × Viega Hackathon. The tool continuously surfaces competitive signals, synthesizes them into strategic insights, and simulates multi-perspective AI debate — so product and strategy teams can move from raw market noise to actionable decisions in minutes.
+
+---
+
+## Features
+
+### Signal Radar
+Real-time feed of market signals (competitor moves, pricing shifts, regulatory changes, press). Each signal is scored by relevance and urgency, tagged by category, and linked to the raw source.
+
+### Dashboard
+At-a-glance strategic overview: signal volume trends, category breakdown, urgency heatmap, and top recommended actions — all in a single data-dense view.
+
+### Action Queue
+Prioritized list of strategic actions generated from the current signal landscape. Each action includes rationale, estimated impact, and a one-click path to the Research module for deeper investigation.
+
+### Agent Debate
+Five AI personas (Strategist, Devil's Advocate, Market Analyst, Risk Officer, Innovator) debate a user-submitted question in structured rounds. Produces a synthesized verdict with minority dissent surfaced — giving a 360° view before any decision.
+
+### Research Module
+On-demand deep research on any signal or topic. Returns a structured report with key findings, evidence links, and strategic implications.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| AI | Google Gemini 2.5 Flash |
+| Database / ORM | Prisma |
+| Deployment | Vercel |
+
+---
+
+## Local Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Copy env template and fill in your keys
+cp .env.example .env.local
+
+# Push the database schema
+npx prisma db push
+
+# Start the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Required Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+GEMINI_API_KEY=        # Google AI Studio key
+DATABASE_URL=          # Prisma-compatible connection string
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Architecture Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+app/
+├── api/               # Route handlers (signals, research, debate, actions)
+├── dashboard/         # Dashboard page
+├── signals/           # Signal Radar feed + detail view
+├── debate/            # Agent Debate interface
+├── research/          # Research module
+└── actions/           # Action Queue
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+prisma/
+└── schema.prisma      # Signal, Action, Research, DebateSession models
 
-## Deploy on Vercel
+lib/
+├── gemini.ts          # Gemini client + prompt templates
+└── db.ts              # Prisma client singleton
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Hackathon Context
+
+Built at **Futury × Viega Hackathon** (May 2026). The challenge: give Viega's strategy team a way to stay ahead of fast-moving B2B markets without drowning in unstructured information. We focused on signal quality over quantity and on making AI reasoning transparent through the multi-agent debate format.
+
+---
+
+## License
+
+MIT
